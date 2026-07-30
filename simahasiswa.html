@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiMahasiswa — Sistem Informasi Akademik Mahasiswa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<style>
+:root{
+  --blue-900:#0A2E52;
+  --blue-700:#0D3F80;
+  --blue-600:#1565C0;
+  --blue-400:#4C93E0;
+  --cyan:#00B8D9;
+  --bg:#F5F9FF;
+  --bg-alt:#EDF3FC;
+  --card:#FFFFFF;
+  --line:#DCE7F5;
+  --ink:#0F1C2E;
+  --muted:#5B6B80;
+  --good:#2E7D32;
+  --warn:#C77700;
+  --danger:#B3261E;
+  --radius:16px;
+  --shadow: 0 8px 30px -12px rgba(13,63,128,0.18);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{
+  font-family:'Sora',sans-serif;
+  color:var(--blue-900);
+  margin:0 0 .5em 0;
+  letter-spacing:-0.01em;
+}
+.mono{font-family:'JetBrains Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+img,svg{max-width:100%;}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px;}
+section{padding:96px 0;position:relative;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--blue-600);font-weight:600;
+  background:rgba(21,101,192,.08);
+  border:1px solid rgba(21,101,192,.18);
+  padding:6px 14px;border-radius:999px;
+  margin-bottom:18px;
+}
+.section-head{max-width:640px;margin-bottom:52px;}
+.section-head p{color:var(--muted);font-size:1.05rem;margin-top:12px;}
+.alt{background:var(--bg-alt);}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none;transition:none;}
+}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(10px);
+  background:rgba(245,249,255,.82);
+  border-bottom:1px solid var(--line);
+}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:1.05rem;color:var(--blue-900);}
+.brand .dot{width:10px;height:10px;border-radius:3px;background:var(--blue-600);transform:rotate(45deg);}
+.navlinks{display:flex;gap:28px;font-size:.9rem;font-weight:500;color:var(--muted);}
+.navlinks a:hover{color:var(--blue-600);}
+.nav-cta{
+  background:var(--blue-600);color:#fff;padding:10px 18px;border-radius:10px;
+  font-weight:600;font-size:.88rem;
+}
+.burger{display:none;font-size:1.3rem;color:var(--blue-900);}
+
+/* HERO */
+.hero{padding-top:88px;padding-bottom:70px;overflow:hidden;}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
+.hero h1{font-size:clamp(2.1rem,4.4vw,3.15rem);line-height:1.08;}
+.hero h1 span{color:var(--blue-600);}
+.hero p.lead{color:var(--muted);font-size:1.12rem;max-width:520px;margin-bottom:30px;}
+.hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px;}
+.badge{
+  font-family:'JetBrains Mono',monospace;font-size:.76rem;
+  background:var(--card);border:1px solid var(--line);
+  padding:7px 12px;border-radius:8px;color:var(--blue-700);font-weight:500;
+}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 24px;border-radius:12px;font-weight:600;font-size:.95rem;
+  transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  cursor:pointer;border:none;
+}
+.btn-primary{background:var(--blue-600);color:#fff;box-shadow:0 10px 24px -8px rgba(21,101,192,.55);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px -8px rgba(21,101,192,.6);}
+.btn-outline{background:transparent;color:var(--blue-700);border:1.5px solid var(--blue-600);}
+.btn-outline:hover{background:rgba(21,101,192,.08);transform:translateY(-2px);}
+
+/* HERO MOCKUP */
+.mockup-stage{position:relative;height:440px;}
+.browser{
+  position:absolute;top:0;left:0;width:100%;max-width:460px;
+  background:var(--card);border-radius:14px;box-shadow:var(--shadow);
+  border:1px solid var(--line);overflow:hidden;
+  animation:float1 6s ease-in-out infinite;
+}
+.browser .bar{display:flex;gap:6px;align-items:center;padding:10px 14px;background:var(--bg-alt);border-bottom:1px solid var(--line);}
+.browser .bar span{width:9px;height:9px;border-radius:50%;background:#D7E1EE;}
+.browser .body{padding:16px;}
+.skeleton-row{height:10px;border-radius:5px;background:linear-gradient(90deg,#E7EFFA,#F3F8FF,#E7EFFA);margin-bottom:9px;}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.mini-stat{background:var(--bg-alt);border-radius:10px;padding:10px;border:1px solid var(--line);}
+.mini-stat b{display:block;font-family:'Sora';color:var(--blue-600);font-size:1.05rem;}
+.mini-stat span{font-size:.68rem;color:var(--muted);}
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:60px;margin-top:14px;}
+.chart-bars i{flex:1;background:linear-gradient(180deg,var(--blue-400),var(--blue-600));border-radius:4px 4px 0 0;}
+
+.phone{
+  position:absolute;bottom:-10px;right:20px;width:200px;height:400px;
+  background:var(--blue-900);border-radius:34px;padding:10px;
+  box-shadow:var(--shadow);
+  animation:float2 7s ease-in-out infinite;
+}
+.phone .screen{background:#fff;border-radius:24px;height:100%;overflow:hidden;position:relative;}
+.phone .notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:60px;height:14px;background:var(--blue-900);border-radius:10px;z-index:2;}
+.phone .status{height:34px;background:var(--blue-600);display:flex;align-items:center;padding:0 14px;color:#fff;font-size:.62rem;font-family:'JetBrains Mono';gap:6px;}
+.phone .content{padding:12px;}
+.phone .card{background:var(--bg-alt);border-radius:10px;padding:10px;margin-bottom:8px;}
+.phone .card b{font-size:.72rem;color:var(--blue-900);}
+.phone .card .l{height:6px;border-radius:3px;background:#DCE7F5;margin-top:6px;}
+.phone .ring{width:52px;height:52px;border-radius:50%;margin:6px auto 10px;background:conic-gradient(var(--blue-600) 78%, #E4ECF7 0);display:flex;align-items:center;justify-content:center;}
+.phone .ring b{background:#fff;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:var(--blue-700);}
+
+@keyframes float1{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes float2{0%,100%{transform:translateY(0);}50%{transform:translateY(10px);}}
+
+/* TECH STACK */
+.stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.stack-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:28px 20px;text-align:center;transition:transform .25s ease, box-shadow .25s ease;
+}
+.stack-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
+.stack-card i{font-size:2.1rem;margin-bottom:14px;color:var(--blue-600);}
+.stack-card h4{font-size:1rem;margin-bottom:4px;}
+.stack-card span{font-size:.8rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+
+/* FEATURE GRIDS */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.feat-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px;transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.feat-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:rgba(21,101,192,.3);}
+.feat-icon{
+  width:46px;height:46px;border-radius:12px;background:rgba(21,101,192,.1);
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--blue-600);font-size:1.15rem;
+}
+.feat-card h4{font-size:1.02rem;margin-bottom:6px;}
+.feat-card p{font-size:.88rem;color:var(--muted);margin:0;}
+.feat-card .tag{
+  display:inline-block;margin-top:12px;font-family:'JetBrains Mono';font-size:.66rem;
+  color:var(--blue-700);background:rgba(21,101,192,.08);padding:3px 9px;border-radius:6px;
+}
+.mobile-icon{background:rgba(0,184,217,.12);color:var(--cyan);}
+
+/* DATABASE / ERD */
+.db-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:start;}
+.erd{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.table-list{display:flex;flex-direction:column;gap:10px;}
+.table-item{
+  display:flex;align-items:center;gap:12px;background:var(--card);
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:'JetBrains Mono';font-size:.82rem;
+}
+.table-item i{color:var(--blue-600);width:18px;text-align:center;}
+.table-item .rel{margin-left:auto;font-size:.68rem;color:var(--muted);}
+
+/* FUZZY */
+.fuzzy-intro{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin-bottom:48px;}
+.fuzzy-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.fuzzy-card h4{font-size:.95rem;display:flex;align-items:center;gap:8px;}
+.fuzzy-card h4 i{color:var(--blue-600);}
+.membership-chart{width:100%;height:auto;}
+.rules-scroll{max-height:340px;overflow-y:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);}
+table{width:100%;border-collapse:collapse;font-size:.86rem;}
+thead th{
+  position:sticky;top:0;background:var(--blue-900);color:#fff;text-align:left;
+  padding:12px 14px;font-family:'JetBrains Mono';font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;
+}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line);}
+tbody tr:nth-child(even){background:var(--bg-alt);}
+.pill{padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:600;font-family:'JetBrains Mono';}
+.pill.kurang{background:#FCE8E6;color:var(--danger);}
+.pill.cukup{background:#FFF3DE;color:var(--warn);}
+.pill.baik{background:#DDECFB;color:var(--blue-700);}
+.pill.sgtbaik{background:#DFF3E1;color:var(--good);}
+pre{border-radius:var(--radius);overflow:hidden;margin-top:28px;font-size:.82rem;}
+pre code.hljs{padding:22px !important;}
+
+/* PERMISSION MATRIX */
+.perm-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);}
+.perm-wrap table{min-width:640px;}
+.role-head{display:flex;flex-direction:column;gap:2px;}
+.role-head b{font-family:'Sora';font-size:.85rem;}
+.role-head span{font-size:.66rem;opacity:.75;font-weight:400;text-transform:none;letter-spacing:0;}
+.check-yes{color:var(--good);}
+.check-no{color:#C6D2E0;}
+.role-legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:20px;font-size:.85rem;color:var(--muted);}
+.role-legend span{display:inline-flex;align-items:center;gap:8px;}
+.role-legend b{width:10px;height:10px;border-radius:3px;display:inline-block;}
+
+/* DOWNLOAD */
+.download{
+  background:linear-gradient(135deg,var(--blue-900),var(--blue-700) 60%, var(--blue-600));
+  border-radius:24px;padding:60px 48px;text-align:center;color:#fff;position:relative;overflow:hidden;
+}
+.download::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 15%, rgba(0,184,217,.35), transparent 55%);
+}
+.download h2{color:#fff;font-size:clamp(1.6rem,3vw,2.2rem);}
+.download p{color:rgba(255,255,255,.78);max-width:520px;margin:0 auto 30px;}
+.download .actions{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;position:relative;z-index:1;}
+.download .btn-primary{background:#fff;color:var(--blue-700);box-shadow:0 10px 24px -8px rgba(0,0,0,.35);}
+.download .btn-outline{border-color:rgba(255,255,255,.5);color:#fff;}
+.download .btn-outline:hover{background:rgba(255,255,255,.12);}
+
+/* FOOTER */
+footer{padding:40px 0;border-top:1px solid var(--line);}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+footer p{margin:0;color:var(--muted);font-size:.85rem;}
+footer .stackline{font-family:'JetBrains Mono';font-size:.72rem;color:var(--muted);}
+
+/* RESPONSIVE */
+@media (max-width:960px){
+  .stack-grid{grid-template-columns:repeat(2,1fr);}
+  .feat-grid{grid-template-columns:repeat(2,1fr);}
+  .hero .wrap{grid-template-columns:1fr;}
+  .mockup-stage{height:380px;margin-top:20px;}
+  .db-layout{grid-template-columns:1fr;}
+  .fuzzy-intro{grid-template-columns:1fr;}
+}
+@media (max-width:640px){
+  section{padding:64px 0;}
+  .navlinks{display:none;}
+  .stack-grid{grid-template-columns:repeat(2,1fr);}
+  .feat-grid{grid-template-columns:1fr;}
+  .download{padding:44px 24px;}
+  .phone{width:150px;height:300px;right:6px;}
+  .browser{max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> SiMahasiswa</div>
+    <div class="navlinks">
+      <a href="#fitur-web">Fitur Web</a>
+      <a href="#fitur-mobile">Fitur Mobile</a>
+      <a href="#database">Database</a>
+      <a href="#fuzzy">Fuzzy Logic</a>
+      <a href="#akses">Hak Akses</a>
+    </div>
+    <a href="#unduh" class="nav-cta">Kunjungi &amp; Unduh</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="reveal in">
+      <div class="eyebrow"><i class="fa-solid fa-graduation-cap"></i> Sistem Informasi Akademik</div>
+      <h1>SiMahasiswa — akademik kampus, <span>satu sistem terpadu.</span></h1>
+      <p class="lead">Panel admin berbasis Laravel dan aplikasi mobile Flutter yang mengelola KRS, jadwal, nilai, presensi, pembayaran UKT, hingga peminjaman buku — dilengkapi evaluasi performa akademik dengan logika fuzzy Mamdani.</p>
+      <div class="hero-badges">
+        <span class="badge"><i class="fa-brands fa-laravel"></i> Laravel 11</span>
+        <span class="badge"><i class="fa-solid fa-mobile-screen-button"></i> Flutter 3.x</span>
+        <span class="badge"><i class="fa-solid fa-database"></i> MySQL</span>
+        <span class="badge"><i class="fa-solid fa-shield-halved"></i> Sanctum Auth</span>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#unduh"><i class="fa-solid fa-arrow-down"></i> Lihat Akses &amp; Unduh</a>
+        <a class="btn btn-outline" href="#fuzzy"><i class="fa-solid fa-diagram-project"></i> Lihat Fuzzy Logic</a>
+      </div>
+    </div>
+
+    <div class="mockup-stage reveal in">
+      <div class="browser">
+        <div class="bar"><span></span><span></span><span></span></div>
+        <div class="body">
+          <div class="skeleton-row" style="width:40%;"></div>
+          <div class="skeleton-row" style="width:85%;"></div>
+          <div class="skeleton-row" style="width:70%;"></div>
+          <div class="mini-stats">
+            <div class="mini-stat"><b>1.284</b><span>Mahasiswa</span></div>
+            <div class="mini-stat"><b>96</b><span>Mata Kuliah</span></div>
+            <div class="mini-stat"><b>3.51</b><span>Rata IPK</span></div>
+          </div>
+          <div class="chart-bars">
+            <i style="height:40%;"></i><i style="height:60%;"></i><i style="height:35%;"></i>
+            <i style="height:80%;"></i><i style="height:55%;"></i><i style="height:70%;"></i><i style="height:45%;"></i>
+          </div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="status"><i class="fa-solid fa-signal"></i> SiMahasiswa</div>
+          <div class="content">
+            <div class="ring"><b>3.6</b></div>
+            <div class="card"><b>KRS Semester Ini</b><div class="l" style="width:80%;"></div></div>
+            <div class="card"><b>Jadwal Hari Ini</b><div class="l" style="width:60%;"></div></div>
+            <div class="card"><b>Presensi</b><div class="l" style="width:90%;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="alt" id="stack">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-layer-group"></i> Teknologi</div>
+      <h2>Dibangun di atas stack yang teruji</h2>
+      <p>Backend, web, dan mobile terhubung melalui satu REST API bertoken.</p>
+    </div>
+    <div class="stack-grid reveal">
+      <div class="stack-card"><i class="fa-brands fa-laravel"></i><h4>Laravel 11</h4><span>PHP 8.3</span></div>
+      <div class="stack-card"><i class="fa-solid fa-wind"></i><h4>TailwindCSS</h4><span>Blade Views</span></div>
+      <div class="stack-card"><i class="fa-brands fa-android"></i><h4>Flutter 3.x</h4><span>Dart</span></div>
+      <div class="stack-card"><i class="fa-solid fa-database"></i><h4>MySQL</h4><span>Relational DB</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR WEB -->
+<section id="fitur-web">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-desktop"></i> Panel Admin</div>
+      <h2>Fitur Web (Laravel Admin Panel)</h2>
+      <p>Dikelola oleh Admin (Dosen) dan Editor (Staff Kampus) untuk seluruh operasional akademik.</p>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-user-shield"></i></div><h4>Manajemen Role &amp; Hak Akses</h4><p>CRUD role dan permission untuk mengatur akses tiap pengguna sistem.</p><span class="tag">CRUD</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-user-graduate"></i></div><h4>Data Mahasiswa</h4><p>Kelola data induk mahasiswa yang terhubung ke seluruh transaksi via NIM.</p><span class="tag">CRUD</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-book-open"></i></div><h4>Mata Kuliah</h4><p>Kelola daftar mata kuliah, SKS, dan kurikulum program studi.</p><span class="tag">CRUD</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-chalkboard-user"></i></div><h4>Data Dosen</h4><p>Kelola data pengajar beserta penugasan mata kuliah.</p><span class="tag">CRUD</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-door-open"></i></div><h4>Ruangan</h4><p>Kelola ruang kelas untuk penjadwalan perkuliahan.</p><span class="tag">CRUD</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-book"></i></div><h4>Buku Perpustakaan</h4><p>Kelola koleksi buku dan ketersediaan stok perpustakaan.</p><span class="tag">CRUD</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-file-signature"></i></div><h4>Transaksi KRS</h4><p>Verifikasi pengambilan mata kuliah mahasiswa per semester.</p><span class="tag">Transaksi</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-calendar-days"></i></div><h4>Jadwal Perkuliahan</h4><p>Atur jadwal kelas berdasarkan dosen, ruangan, dan waktu.</p><span class="tag">Transaksi</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-clipboard-check"></i></div><h4>Presensi Perkuliahan</h4><p>Rekam kehadiran mahasiswa di setiap sesi perkuliahan.</p><span class="tag">Transaksi</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-star-half-stroke"></i></div><h4>Nilai Perkuliahan</h4><p>Input dan kelola nilai akhir per mata kuliah dan mahasiswa.</p><span class="tag">Transaksi</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-money-bill-wave"></i></div><h4>Pembayaran UKT</h4><p>Catat dan verifikasi pembayaran uang kuliah tunggal.</p><span class="tag">Transaksi</span></div>
+      <div class="feat-card"><div class="feat-icon"><i class="fa-solid fa-book-bookmark"></i></div><h4>Peminjaman Buku</h4><p>Kelola sirkulasi peminjaman dan pengembalian buku.</p><span class="tag">Transaksi</span></div>
+      <div class="feat-card" style="grid-column:span 2;background:linear-gradient(135deg,var(--blue-900),var(--blue-700));color:#fff;border:none;">
+        <div class="feat-icon" style="background:rgba(255,255,255,.15);color:#fff;"><i class="fa-solid fa-chart-line"></i></div>
+        <h4 style="color:#fff;">Sistem Evaluasi Fuzzy</h4>
+        <p style="color:rgba(255,255,255,.8);">Menilai performa akademik mahasiswa secara otomatis menggunakan logika fuzzy Mamdani berbasis nilai, IPK, dan SKS lulus.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR MOBILE -->
+<section class="alt" id="fitur-mobile">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-mobile-screen"></i> Aplikasi Mahasiswa</div>
+      <h2>Fitur Mobile App (Flutter)</h2>
+      <p>Akses pribadi mahasiswa untuk seluruh kebutuhan akademik dari genggaman.</p>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-right-to-bracket"></i></div><h4>Login &amp; Register</h4><p>Autentikasi aman berbasis token dengan Laravel Sanctum.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-gauge"></i></div><h4>Dashboard</h4><p>Profil, menu cepat, dan ringkasan akademik dalam satu layar.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-file-signature"></i></div><h4>KRS</h4><p>Lihat dan tambah KRS beserta status verifikasi dari kampus.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-award"></i></div><h4>Nilai</h4><p>Ringkasan IPK, total SKS, dan detail nilai per mata kuliah.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-calendar-week"></i></div><h4>Jadwal Perkuliahan</h4><p>Jadwal kelas dengan filter per hari agar mudah dipantau.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-clipboard-check"></i></div><h4>Presensi</h4><p>Riwayat kehadiran di setiap mata kuliah yang diambil.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-credit-card"></i></div><h4>Pembayaran UKT</h4><p>Riwayat dan proses pembayaran uang kuliah tunggal.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-book-bookmark"></i></div><h4>Peminjaman Buku</h4><p>Riwayat dan status peminjaman buku perpustakaan.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-chart-pie"></i></div><h4>Evaluasi Fuzzy</h4><p>Skor performa akademik dengan visualisasi chart interaktif.</p></div>
+      <div class="feat-card"><div class="feat-icon mobile-icon"><i class="fa-solid fa-id-card"></i></div><h4>Profil Mahasiswa</h4><p>Kelola data diri dan informasi akademik pribadi.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DATABASE -->
+<section id="database">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-diagram-project"></i> Struktur Data</div>
+      <h2>Database</h2>
+      <p>Mahasiswa terhubung ke akun pengguna dan seluruh transaksi melalui NIM sebagai kunci relasi utama.</p>
+    </div>
+    <div class="db-layout reveal">
+      <div class="erd">
+        <svg viewBox="0 0 640 380" class="membership-chart" xmlns="http://www.w3.org/2000/svg">
+          <style>
+            .n-title{font-family:'JetBrains Mono',monospace;font-size:12px;fill:#0A2E52;font-weight:600;}
+            .n-box{fill:#F5F9FF;stroke:#1565C0;stroke-width:1.4;}
+            .n-line{stroke:#93B6E3;stroke-width:1.6;}
+            .n-key{font-family:'JetBrains Mono';font-size:9.5px;fill:#5B6B80;}
+          </style>
+          <rect x="20" y="20" width="140" height="70" rx="10" class="n-box"/>
+          <text x="90" y="42" text-anchor="middle" class="n-title">users</text>
+          <text x="90" y="60" text-anchor="middle" class="n-key">id, email, role</text>
+          <text x="90" y="74" text-anchor="middle" class="n-key">password</text>
+
+          <rect x="250" y="20" width="150" height="70" rx="10" class="n-box"/>
+          <text x="325" y="42" text-anchor="middle" class="n-title">mahasiswa</text>
+          <text x="325" y="60" text-anchor="middle" class="n-key">nim, user_id</text>
+          <text x="325" y="74" text-anchor="middle" class="n-key">nama, prodi</text>
+
+          <rect x="480" y="20" width="140" height="70" rx="10" class="n-box"/>
+          <text x="550" y="42" text-anchor="middle" class="n-title">roles</text>
+          <text x="550" y="60" text-anchor="middle" class="n-key">id, nama_role</text>
+
+          <line x1="160" y1="55" x2="250" y2="55" class="n-line"/>
+          <line x1="400" y1="55" x2="480" y2="55" class="n-line"/>
+
+          <rect x="20" y="150" width="150" height="60" rx="10" class="n-box"/>
+          <text x="95" y="172" text-anchor="middle" class="n-title">mata_kuliah</text>
+          <text x="95" y="190" text-anchor="middle" class="n-key">kode_mk, sks</text>
+
+          <rect x="220" y="150" width="150" height="60" rx="10" class="n-box"/>
+          <text x="295" y="172" text-anchor="middle" class="n-title">dosen</text>
+          <text x="295" y="190" text-anchor="middle" class="n-key">nidn, nama</text>
+
+          <rect x="420" y="150" width="150" height="60" rx="10" class="n-box"/>
+          <text x="495" y="172" text-anchor="middle" class="n-title">ruangan</text>
+          <text x="495" y="190" text-anchor="middle" class="n-key">kode_ruang</text>
+
+          <rect x="20" y="270" width="600" height="90" rx="10" class="n-box" fill="#EAF2FD"/>
+          <text x="320" y="292" text-anchor="middle" class="n-title">transaksi_krs · transaksi_jadwal_perkuliahan · transaksi_presensi_perkuliahan</text>
+          <text x="320" y="312" text-anchor="middle" class="n-title">transaksi_nilai_perkuliahan · transaksi_pembayaran_ukt · transaksi_peminjaman_buku</text>
+          <text x="320" y="336" text-anchor="middle" class="n-key">Relasi utama: nim (FK ke mahasiswa)</text>
+
+          <line x1="325" y1="90" x2="325" y2="270" class="n-line" stroke-dasharray="4 3"/>
+          <line x1="95" y1="210" x2="200" y2="270" class="n-line" stroke-dasharray="4 3"/>
+          <line x1="295" y1="210" x2="320" y2="270" class="n-line" stroke-dasharray="4 3"/>
+          <line x1="495" y1="210" x2="440" y2="270" class="n-line" stroke-dasharray="4 3"/>
+        </svg>
+      </div>
+      <div class="table-list">
+        <div class="table-item"><i class="fa-solid fa-table"></i> users <span class="rel">akun login</span></div>
+        <div class="table-item"><i class="fa-solid fa-table"></i> mahasiswa <span class="rel">via nim</span></div>
+        <div class="table-item"><i class="fa-solid fa-table"></i> roles <span class="rel">hak akses</span></div>
+        <div class="table-item"><i class="fa-solid fa-table"></i> mata_kuliah <span class="rel">kurikulum</span></div>
+        <div class="table-item"><i class="fa-solid fa-table"></i> dosen <span class="rel">pengajar</span></div>
+        <div class="table-item"><i class="fa-solid fa-table"></i> ruangan <span class="rel">fasilitas</span></div>
+        <div class="table-item"><i class="fa-solid fa-table"></i> buku <span class="rel">perpustakaan</span></div>
+        <div class="table-item"><i class="fa-solid fa-diagram-next"></i> transaksi_krs</div>
+        <div class="table-item"><i class="fa-solid fa-diagram-next"></i> transaksi_jadwal_perkuliahan</div>
+        <div class="table-item"><i class="fa-solid fa-diagram-next"></i> transaksi_presensi_perkuliahan</div>
+        <div class="table-item"><i class="fa-solid fa-diagram-next"></i> transaksi_nilai_perkuliahan</div>
+        <div class="table-item"><i class="fa-solid fa-diagram-next"></i> transaksi_pembayaran_ukt</div>
+        <div class="table-item"><i class="fa-solid fa-diagram-next"></i> transaksi_peminjaman_buku</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FUZZY LOGIC -->
+<section class="alt" id="fuzzy">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-brain"></i> Metode Mamdani · Centroid</div>
+      <h2>Sistem Evaluasi Fuzzy</h2>
+      <p>Menilai performa akademik mahasiswa secara gradual dari tiga variabel input, tanpa lompatan nilai yang drastis.</p>
+    </div>
+
+    <div class="fuzzy-intro reveal">
+      <div class="fuzzy-card">
+        <h4><i class="fa-solid fa-sliders"></i> Variabel Input</h4>
+        <table>
+          <tbody>
+            <tr><td>Rata-rata Nilai</td><td>Rendah · Sedang · Tinggi</td></tr>
+            <tr><td>IPK</td><td>Rendah · Sedang · Tinggi</td></tr>
+            <tr><td>SKS Lulus</td><td>Sedikit · Cukup · Banyak</td></tr>
+          </tbody>
+        </table>
+        <h4 style="margin-top:20px;"><i class="fa-solid fa-bullseye"></i> Variabel Output</h4>
+        <p style="color:var(--muted);font-size:.9rem;margin:0;">Performa Akademik: <b>Kurang</b>, <b>Cukup</b>, <b>Baik</b>, <b>Sangat Baik</b> — dihitung melalui defuzzifikasi centroid.</p>
+      </div>
+      <div class="fuzzy-card">
+        <h4><i class="fa-solid fa-chart-area"></i> Fungsi Keanggotaan (IPK)</h4>
+        <svg viewBox="0 0 400 220" class="membership-chart" xmlns="http://www.w3.org/2000/svg">
+          <line x1="30" y1="180" x2="380" y2="180" stroke="#C6D6EA" stroke-width="1.5"/>
+          <line x1="30" y1="20" x2="30" y2="180" stroke="#C6D6EA" stroke-width="1.5"/>
+          <polygon points="30,180 30,30 120,180" fill="rgba(211,47,47,.12)" stroke="#B3261E" stroke-width="2"/>
+          <polygon points="60,180 150,30 240,30 330,180" fill="rgba(199,119,0,.12)" stroke="#C77700" stroke-width="2"/>
+          <polygon points="260,180 350,30 380,30 380,180" fill="rgba(21,101,192,.14)" stroke="#1565C0" stroke-width="2"/>
+          <text x="45" y="200" class="n-key" font-family="JetBrains Mono" font-size="10" fill="#5B6B80">0.0</text>
+          <text x="185" y="200" class="n-key" font-family="JetBrains Mono" font-size="10" fill="#5B6B80">2.0</text>
+          <text x="355" y="200" class="n-key" font-family="JetBrains Mono" font-size="10" fill="#5B6B80">4.0</text>
+          <text x="55" y="60" font-family="JetBrains Mono" font-size="10" fill="#B3261E">Rendah</text>
+          <text x="170" y="55" font-family="JetBrains Mono" font-size="10" fill="#C77700">Sedang</text>
+          <text x="300" y="55" font-family="JetBrains Mono" font-size="10" fill="#1565C0">Tinggi</text>
+        </svg>
+        <p style="color:var(--muted);font-size:.82rem;margin-top:4px;">Ilustrasi kurva segitiga/trapesium untuk derajat keanggotaan IPK terhadap tiga himpunan fuzzy.</p>
+      </div>
+    </div>
+
+    <h4 style="margin-bottom:14px;"><i class="fa-solid fa-list-check" style="color:var(--blue-600);margin-right:8px;"></i>Basis Aturan (20 Rules)</h4>
+    <div class="rules-scroll reveal">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Rata Nilai</th><th>IPK</th><th>SKS Lulus</th><th>Performa</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R1</td><td>Rendah</td><td>Rendah</td><td>Sedikit</td><td><span class="pill kurang">Kurang</span></td></tr>
+          <tr><td>R2</td><td>Rendah</td><td>Rendah</td><td>Cukup</td><td><span class="pill kurang">Kurang</span></td></tr>
+          <tr><td>R3</td><td>Rendah</td><td>Rendah</td><td>Banyak</td><td><span class="pill cukup">Cukup</span></td></tr>
+          <tr><td>R4</td><td>Rendah</td><td>Sedang</td><td>Sedikit</td><td><span class="pill kurang">Kurang</span></td></tr>
+          <tr><td>R5</td><td>Rendah</td><td>Sedang</td><td>Cukup</td><td><span class="pill cukup">Cukup</span></td></tr>
+          <tr><td>R6</td><td>Rendah</td><td>Sedang</td><td>Banyak</td><td><span class="pill cukup">Cukup</span></td></tr>
+          <tr><td>R7</td><td>Rendah</td><td>Tinggi</td><td>Banyak</td><td><span class="pill baik">Baik</span></td></tr>
+          <tr><td>R8</td><td>Sedang</td><td>Rendah</td><td>Sedikit</td><td><span class="pill kurang">Kurang</span></td></tr>
+          <tr><td>R9</td><td>Sedang</td><td>Sedang</td><td>Sedikit</td><td><span class="pill cukup">Cukup</span></td></tr>
+          <tr><td>R10</td><td>Sedang</td><td>Sedang</td><td>Cukup</td><td><span class="pill cukup">Cukup</span></td></tr>
+          <tr><td>R11</td><td>Sedang</td><td>Sedang</td><td>Banyak</td><td><span class="pill baik">Baik</span></td></tr>
+          <tr><td>R12</td><td>Sedang</td><td>Tinggi</td><td>Cukup</td><td><span class="pill baik">Baik</span></td></tr>
+          <tr><td>R13</td><td>Sedang</td><td>Tinggi</td><td>Banyak</td><td><span class="pill sgtbaik">SangatBaik</span></td></tr>
+          <tr><td>R14</td><td>Tinggi</td><td>Sedang</td><td>Cukup</td><td><span class="pill baik">Baik</span></td></tr>
+          <tr><td>R15</td><td>Tinggi</td><td>Sedang</td><td>Banyak</td><td><span class="pill baik">Baik</span></td></tr>
+          <tr><td>R16</td><td>Tinggi</td><td>Tinggi</td><td>Sedikit</td><td><span class="pill baik">Baik</span></td></tr>
+          <tr><td>R17</td><td>Tinggi</td><td>Tinggi</td><td>Cukup</td><td><span class="pill sgtbaik">SangatBaik</span></td></tr>
+          <tr><td>R18</td><td>Tinggi</td><td>Tinggi</td><td>Banyak</td><td><span class="pill sgtbaik">SangatBaik</span></td></tr>
+          <tr><td>R19</td><td>Rendah</td><td>Tinggi</td><td>Sedikit</td><td><span class="pill cukup">Cukup</span></td></tr>
+          <tr><td>R20</td><td>Sedang</td><td>Rendah</td><td>Banyak</td><td><span class="pill cukup">Cukup</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="reveal">
+      <pre><code class="language-php">// Contoh implementasi fungsi keanggotaan segitiga
+function membershipTriangle(float $x, float $a, float $b, float $c): float
+{
+    if ($x <= $a || $x >= $c) return 0.0;
+    if ($x == $b) return 1.0;
+    return $x < $b
+        ? ($x - $a) / ($b - $a)
+        : ($c - $x) / ($c - $b);
+}
+
+// Defuzzifikasi Centroid
+function defuzzifyCentroid(array $z, array $muZ): float
+{
+    $numerator = 0; $denominator = 0;
+    foreach ($z as $i => $zi) {
+        $numerator   += $zi * $muZ[$i];
+        $denominator += $muZ[$i];
+    }
+    return $denominator > 0 ? $numerator / $denominator : 0;
+}</code></pre>
+    </div>
+
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px;">
+      <div class="fuzzy-card" style="padding:18px;"><i class="fa-solid fa-wave-square" style="color:var(--blue-600);"></i><h4 style="font-size:.92rem;margin-top:8px;">Transisi Gradual</h4><p style="font-size:.82rem;color:var(--muted);margin:0;">Tidak ada lompatan nilai drastis antar kategori performa.</p></div>
+      <div class="fuzzy-card" style="padding:18px;"><i class="fa-solid fa-circle-question" style="color:var(--blue-600);"></i><h4 style="font-size:.92rem;margin-top:8px;">Penanganan Ketidakpastian</h4><p style="font-size:.82rem;color:var(--muted);margin:0;">Cocok untuk data akademik yang bersifat samar (fuzzy).</p></div>
+      <div class="fuzzy-card" style="padding:18px;"><i class="fa-solid fa-code-branch" style="color:var(--blue-600);"></i><h4 style="font-size:.92rem;margin-top:8px;">Rule Base Fleksibel</h4><p style="font-size:.82rem;color:var(--muted);margin:0;">Aturan mudah ditambah atau disesuaikan kebijakan kampus.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HAK AKSES -->
+<section id="akses">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-user-lock"></i> Permission Matrix</div>
+      <h2>Hak Akses</h2>
+      <p>Tiga peran dengan cakupan akses berbeda terhadap fitur web dan mobile.</p>
+    </div>
+    <div class="perm-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Modul</th>
+            <th><div class="role-head"><b>Admin</b><span>Dosen</span></div></th>
+            <th><div class="role-head"><b>Editor</b><span>Staff Kampus</span></div></th>
+            <th><div class="role-head"><b>User</b><span>Mahasiswa</span></div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Manajemen Role &amp; Hak Akses</td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i></td></tr>
+          <tr><td>Data Mahasiswa / Dosen / MK / Ruangan / Buku</td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i></td></tr>
+          <tr><td>Transaksi KRS &amp; Jadwal</td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i> <span style="font-size:.72rem;">(ajukan via mobile)</span></td></tr>
+          <tr><td>Presensi &amp; Nilai</td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i> <span style="font-size:.72rem;">(lihat saja)</span></td></tr>
+          <tr><td>Pembayaran UKT &amp; Peminjaman Buku</td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i> <span style="font-size:.72rem;">(lihat &amp; ajukan)</span></td></tr>
+          <tr><td>Evaluasi Fuzzy Akademik</td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i> <span style="font-size:.72rem;">(lihat skor sendiri)</span></td></tr>
+          <tr><td>Aplikasi Mobile</td><td class="check-no"><i class="fa-solid fa-circle-minus"></i></td><td class="check-no"><i class="fa-solid fa-circle-minus"></i></td><td class="check-yes"><i class="fa-solid fa-circle-check"></i></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="role-legend reveal">
+      <span><i class="fa-solid fa-circle-check check-yes"></i> Akses penuh / diizinkan</span>
+      <span><i class="fa-solid fa-circle-minus check-no"></i> Tidak ada akses / terbatas pada data sendiri</span>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section class="alt" id="unduh">
+  <div class="wrap">
+    <div class="download reveal">
+      <h2>Coba SiMahasiswa Sekarang</h2>
+      <p>Akses panel admin melalui browser, atau unduh aplikasi mobile untuk pengalaman akademik di genggaman.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://payment-sufferer-vagueness.ngrok-free.dev" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Kunjungi Website</a>
+        <a class="btn btn-outline" href="#" id="apk-link"><i class="fa-brands fa-android"></i> Download APK</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 SiMahasiswa. Sistem Informasi Akademik Mahasiswa.</p>
+    <p class="stackline">Laravel 11 · Flutter 3.x · MySQL · Sanctum</p>
+  </div>
+</footer>
+
+<script>
+  hljs.highlightAll();
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  revealEls.forEach(el=>io.observe(el));
+
+  document.getElementById('apk-link').addEventListener('click', function(e){
+    e.preventDefault();
+    alert('Tautan APK akan ditambahkan setelah proses build & rilis aplikasi selesai.');
+  });
+</script>
+</body>
+</html>
