@@ -555,28 +555,6 @@ footer .stackline{font-family:'JetBrains Mono';font-size:.72rem;color:var(--mute
       </table>
     </div>
 
-    <div class="reveal">
-      <pre><code class="language-php">// Contoh implementasi fungsi keanggotaan segitiga
-function membershipTriangle(float $x, float $a, float $b, float $c): float
-{
-    if ($x <= $a || $x >= $c) return 0.0;
-    if ($x == $b) return 1.0;
-    return $x < $b
-        ? ($x - $a) / ($b - $a)
-        : ($c - $x) / ($c - $b);
-}
-
-// Defuzzifikasi Centroid
-function defuzzifyCentroid(array $z, array $muZ): float
-{
-    $numerator = 0; $denominator = 0;
-    foreach ($z as $i => $zi) {
-        $numerator   += $zi * $muZ[$i];
-        $denominator += $muZ[$i];
-    }
-    return $denominator > 0 ? $numerator / $denominator : 0;
-}</code></pre>
-    </div>
 
     <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px;">
       <div class="fuzzy-card" style="padding:18px;"><i class="fa-solid fa-wave-square" style="color:var(--blue-600);"></i><h4 style="font-size:.92rem;margin-top:8px;">Transisi Gradual</h4><p style="font-size:.82rem;color:var(--muted);margin:0;">Tidak ada lompatan nilai drastis antar kategori performa.</p></div>
@@ -630,7 +608,7 @@ function defuzzifyCentroid(array $z, array $muZ): float
       <p>Akses panel admin melalui browser, atau unduh aplikasi mobile untuk pengalaman akademik di genggaman.</p>
       <div class="actions">
         <a class="btn btn-primary" href="https://payment-sufferer-vagueness.ngrok-free.dev" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Kunjungi Website</a>
-        <a class="btn btn-outline" href="#" id="apk-link"><i class="fa-brands fa-android"></i> Download APK</a>
+        <a class="btn btn-outline" href="download/app-release.apk" download><i class="fa-brands fa-android"></i> Download APK</a>
       </div>
     </div>
   </div>
@@ -654,10 +632,7 @@ function defuzzifyCentroid(array $z, array $muZ): float
   }, {threshold:0.12});
   revealEls.forEach(el=>io.observe(el));
 
-  document.getElementById('apk-link').addEventListener('click', function(e){
-    e.preventDefault();
-    alert('Tautan APK akan ditambahkan setelah proses build & rilis aplikasi selesai.');
-  });
+  // APK download link aktif — file app-release.apk tersedia di root
 </script>
 </body>
 </html>
