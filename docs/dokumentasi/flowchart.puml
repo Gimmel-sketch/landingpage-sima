@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+start
+
+:User mengisi data input;
+
+:Controller menerima request;
+
+:Memanggil FuzzyService;
+
+if (Jenis Evaluasi?) then (Nilai Akhir)
+  :FuzzyNilaiService->hitung() ;
+elseif (Performa Mahasiswa) then
+  :FuzzyMahasiswaService->evaluasi() ;
+else (Kelayakan KRS)
+  :FuzzyKrsService->hitungKelayakan() ;
+endif
+
+:** Fuzzifikasi
+Hitung derajat keanggotaan
+setiap variabel input**;
+
+:** Evaluasi Rule - Mamdani
+MIN derajat antecedent
+-> kekuatan tiap rule**;
+
+:** Agregasi
+Gabungkan output rule
+dengan operator MAX**;
+
+:** Defuzzifikasi - Centroid
+Hitung titik pusat area
+dengan 100 step sampling**;
+
+:Output crisp 0-100;
+
+if (Simpan ke database?) then (ya)
+  :Simpan nilai_akhir
+  dan fuzzy_detail;
+else (tidak)
+endif
+
+:Tampilkan hasil ke View;
+
+stop
+@enduml

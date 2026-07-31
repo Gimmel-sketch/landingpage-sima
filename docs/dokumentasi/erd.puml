@@ -1,0 +1,217 @@
+@startuml
+!define MASTER entity
+!define TRANS entity
+
+skinparam backgroundColor #FEFEFE
+skinparam entity {
+  BorderColor #2E6F9A
+  BackgroundColor #E8F0FE
+}
+
+' ===== MASTER TABLES =====
+
+entity "mahasiswa" as mahasiswa {
+  nim : VARCHAR(18) <<PK>>
+  --
+  nama : VARCHAR(100)
+  alamat : TEXT
+  tempat_lahir : VARCHAR(50)
+  tanggal_lahir : DATE
+  jenis_kelamin : ENUM(L/P)
+  fakultas : VARCHAR(50)
+  prodi : VARCHAR(50)
+  angkatan : YEAR
+  semester : INT
+  email : VARCHAR(100)
+  no_hp : VARCHAR(15)
+  status : ENUM(Aktif/Cuti/Lulus/DO)
+  agama : VARCHAR(20)
+  nik : VARCHAR(16)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "mata_kuliah" as mata_kuliah {
+  kode_mk : VARCHAR(10) <<PK>>
+  --
+  nama_mk : VARCHAR(100)
+  sks : INT
+  semester : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "dosen" as dosen {
+  nidn : VARCHAR(18) <<PK>>
+  --
+  nama : VARCHAR(100)
+  gelar : VARCHAR(50)
+  kontak : VARCHAR(50)
+  status : VARCHAR(20)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "ruangan" as ruangan {
+  id : BIGINT <<PK>>
+  --
+  nama_ruangan : VARCHAR(50)
+  kapasitas : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "buku" as buku {
+  kode_buku : VARCHAR(10) <<PK>>
+  --
+  judul_buku : VARCHAR(200)
+  penulis : VARCHAR(100)
+  stok : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "users" as users {
+  id : BIGINT <<PK>>
+  --
+  name : VARCHAR(100)
+  email : VARCHAR(100)
+  password : VARCHAR(255)
+  role_id : BIGINT <<FK>>
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "roles" as roles {
+  id : BIGINT <<PK>>
+  --
+  name : VARCHAR(50)
+  display_name : VARCHAR(100)
+  description : TEXT
+  permissions : JSON
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+' ===== TRANSACTION TABLES =====
+
+entity "transaksi_krs" as krs {
+  id : BIGINT <<PK>>
+  --
+  nim : VARCHAR(18) <<FK>>
+  kode_mk : VARCHAR(10) <<FK>>
+  semester_tempuh : INT
+  tahun_akademik : VARCHAR(20)
+  status_verifikasi : ENUM
+  verified_at : DATETIME
+  verified_by : BIGINT <<FK>>
+  keterangan : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "transaksi_nilai_perkuliahan" as nilai {
+  id : BIGINT <<PK>>
+  --
+  transaksi_krs_id : BIGINT <<FK>>
+  nilai_tugas : DECIMAL(5,2)
+  nilai_uts : DECIMAL(5,2)
+  nilai_uas : DECIMAL(5,2)
+  nilai_akhir : DECIMAL(5,2)
+  nilai_huruf : VARCHAR(2)
+  keterangan : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "transaksi_jadwal_perkuliahan" as jadwal {
+  id : BIGINT <<PK>>
+  --
+  kode_mk : VARCHAR(10) <<FK>>
+  nidn : VARCHAR(18) <<FK>>
+  ruangan_id : BIGINT <<FK>>
+  kelas : VARCHAR(10)
+  hari : ENUM
+  jam_mulai : TIME
+  jam_selesai : TIME
+  semester : INT
+  tahun_akademik : VARCHAR(20)
+  status : ENUM
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "transaksi_presensi_perkuliahan" as presensi {
+  id : BIGINT <<PK>>
+  --
+  jadwal_perkuliahan_id : BIGINT <<FK>>
+  nim : VARCHAR(18) <<FK>>
+  tanggal : DATE
+  pertemuan_ke : INT
+  status : ENUM(Hadir/Izin/Sakit/Alpa)
+  keterangan : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "transaksi_pembayaran_ukt" as ukt {
+  id : BIGINT <<PK>>
+  --
+  nim : VARCHAR(18) <<FK>>
+  tanggal_bayar : DATETIME
+  jumlah_bayar : DECIMAL(15,2)
+  semester_dibayar : INT
+  metode_pembayaran : ENUM
+  status_pembayaran : ENUM(Lunas/Pending)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "transaksi_peminjaman_buku" as pinjam {
+  id : BIGINT <<PK>>
+  --
+  nim : VARCHAR(18) <<FK>>
+  kode_buku : VARCHAR(10) <<FK>>
+  tanggal_pinjam : DATE
+  tanggal_tenggat : DATE
+  tanggal_kembali : DATE
+  status_pinjam : ENUM
+  denda : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+' ===== RELATIONSHIPS =====
+
+users }o--|| roles : "memiliki"
+
+mahasiswa ||--o{ krs : "mengambil"
+mata_kuliah ||--o{ krs : "diambil"
+users ||--o{ krs : "verifikasi"
+
+krs ||--|| nilai : "memiliki"
+
+mahasiswa ||--o{ presensi : "absensi"
+jadwal ||--o{ presensi : "jadwal"
+
+mata_kuliah ||--o{ jadwal : "dijadwalkan"
+dosen ||--o{ jadwal : "mengajar"
+ruangan ||--o{ jadwal : "digunakan"
+
+mahasiswa ||--o{ ukt : "membayar"
+
+mahasiswa ||--o{ pinjam : "meminjam"
+buku ||--o{ pinjam : "dipinjam"
+
+' ===== NOTES =====
+
+note top of mahasiswa
+  *** FUZZY LOGIC ***
+  Sistem fuzzy menghitung:
+  1. Nilai Akhir (Tugas, UTS, UAS)
+  2. Performa (RataNilai, IPK, SKS Lulus)
+  3. Kelayakan KRS (IPK, BebanSKS,
+     Semester, Nilai Prasyarat)
+end note
+
+@enduml
