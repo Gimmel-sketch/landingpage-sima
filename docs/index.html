@@ -181,16 +181,90 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 }
 .mobile-icon{background:rgba(0,184,217,.12);color:var(--cyan);}
 
-/* DATABASE / ERD */
-.db-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:start;}
-.erd{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
-.table-list{display:flex;flex-direction:column;gap:10px;}
-.table-item{
-  display:flex;align-items:center;gap:12px;background:var(--card);
-  border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:'JetBrains Mono';font-size:.82rem;
+/* DATABASE / FLOWCHART */
+.diagram-wrap{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;
+  box-shadow:var(--shadow);overflow:hidden;
 }
-.table-item i{color:var(--blue-600);width:18px;text-align:center;}
-.table-item .rel{margin-left:auto;font-size:.68rem;color:var(--muted);}
+.diagram-tabs{
+  display:flex;gap:8px;flex-wrap:wrap;
+  padding:14px 16px;background:var(--bg-alt);border-bottom:1px solid var(--line);
+}
+.diagram-tab{
+  display:inline-flex;align-items:center;gap:9px;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  padding:10px 18px;border-radius:11px;
+  font-family:'Sora',sans-serif;font-size:.85rem;font-weight:600;
+  cursor:pointer;transition:all .25s ease;
+}
+.diagram-tab:hover{color:var(--blue-600);border-color:rgba(21,101,192,.45);transform:translateY(-1px);}
+.diagram-tab.active{
+  background:linear-gradient(135deg,var(--blue-600),var(--blue-400));
+  color:#fff;border-color:transparent;
+  box-shadow:0 8px 20px -8px rgba(21,101,192,.6);
+}
+.diagram-panel{display:none;grid-template-columns:1.45fr 1fr;align-items:stretch;}
+.diagram-panel.active{display:grid;animation:fadeSlide .45s ease;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+.diagram-stage{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  padding:28px;background:#fff;
+  background-image:radial-gradient(circle,#E3ECF7 1px,transparent 1px);
+  background-size:22px 22px;
+  min-height:340px;
+}
+.diagram-canvas{width:100%;display:flex;align-items:center;justify-content:center;}
+.diagram-canvas img{
+  max-width:100%;max-height:520px;height:auto;
+  border-radius:12px;box-shadow:0 16px 40px -16px rgba(0,0,0,.35);
+  cursor:zoom-in;transition:transform .3s ease, box-shadow .3s ease;
+}
+.diagram-canvas img:hover{transform:scale(1.02);}
+.zoom-hint{
+  position:absolute;bottom:16px;right:16px;
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(26,26,26,.85);color:#fff;backdrop-filter:blur(6px);
+  padding:8px 14px;border-radius:999px;
+  font-family:'JetBrains Mono';font-size:.7rem;letter-spacing:.04em;
+  opacity:0;transform:translateY(6px);transition:all .3s ease;pointer-events:none;
+}
+.diagram-stage:hover .zoom-hint{opacity:1;transform:translateY(0);}
+
+.diagram-info{
+  padding:34px 30px;background:var(--card);
+  border-left:1px solid var(--line);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.diagram-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+.diagram-info h3{font-size:1.3rem;margin-bottom:12px;}
+.diagram-info p{font-size:.92rem;color:var(--muted);margin:0 0 20px;}
+.diagram-points{display:flex;flex-direction:column;gap:12px;}
+.diagram-point{display:flex;gap:12px;align-items:flex-start;}
+.diagram-point i{color:var(--blue-600);margin-top:3px;font-size:.9rem;}
+.diagram-point span{font-size:.85rem;color:var(--muted);line-height:1.55;}
+
+/* LIGHTBOX */
+.lightbox{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(8,10,14,.92);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:32px;
+}
+.lightbox.open{display:flex;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.lightbox img{max-width:100%;max-height:88vh;border-radius:12px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);}
+.lightbox-close{
+  position:absolute;top:22px;right:26px;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.12);color:#fff;border:none;font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .2s ease;
+}
+.lightbox-close:hover{background:rgba(255,255,255,.25);}
+.lightbox-caption{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  color:rgba(255,255,255,.8);font-family:'JetBrains Mono';font-size:.8rem;
+  background:rgba(255,255,255,.08);padding:8px 16px;border-radius:999px;white-space:nowrap;
+}
 
 /* FUZZY */
 .fuzzy-intro{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin-bottom:48px;}
@@ -254,8 +328,9 @@ footer .stackline{font-family:'JetBrains Mono';font-size:.72rem;color:var(--mute
   .feat-grid{grid-template-columns:repeat(2,1fr);}
   .hero .wrap{grid-template-columns:1fr;}
   .mockup-stage{height:380px;margin-top:20px;}
-  .db-layout{grid-template-columns:1fr;}
   .fuzzy-intro{grid-template-columns:1fr;}
+  .diagram-panel{grid-template-columns:1fr;}
+  .diagram-info{border-left:none;border-top:1px solid var(--line);}
 }
 @media (max-width:640px){
   section{padding:64px 0;}
@@ -265,6 +340,8 @@ footer .stackline{font-family:'JetBrains Mono';font-size:.72rem;color:var(--mute
   .download{padding:44px 24px;}
   .phone{width:150px;height:300px;right:6px;}
   .browser{max-width:100%;}
+  .diagram-stage{padding:16px;min-height:220px;}
+  .diagram-info{padding:26px 22px;}
 }
 </style>
 </head>
@@ -407,35 +484,105 @@ footer .stackline{font-family:'JetBrains Mono';font-size:.72rem;color:var(--mute
   </div>
 </section>
 
-<!-- DATABASE -->
+<!-- DATABASE & FLOWCHART -->
 <section id="database">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow"><i class="fa-solid fa-diagram-project"></i> Struktur Data</div>
-      <h2>Database & Flowchart</h2>
-      <p>Mahasiswa terhubung ke akun pengguna dan seluruh transaksi melalui NIM sebagai kunci relasi utama. Flowchart di bawah ini menjelaskan alur kerja utama dalam sistem, seperti proses input KRS oleh mahasiswa.</p>
+      <div class="eyebrow"><i class="fa-solid fa-diagram-project"></i> Struktur Data & Alur</div>
+      <h2>Arsitektur Database & Alur Sistem</h2>
+      <p>Jelajahi relasi antar tabel pada ERD serta alur proses utama — evaluasi fuzzy dan input KRS — dalam satu tampilan interaktif.</p>
     </div>
-    <div class="db-layout reveal">
-      <div class="erd">
-        <img src="dokumentasi/erd.png" alt="Entity Relationship Diagram" style="border-radius:12px;">
+
+    <div class="diagram-wrap reveal">
+      <div class="diagram-tabs" role="tablist">
+        <button class="diagram-tab active" data-tab="erd" role="tab">
+          <i class="fa-solid fa-table-cells"></i> ERD Database
+        </button>
+        <button class="diagram-tab" data-tab="flowchart" role="tab">
+          <i class="fa-solid fa-arrow-trend-up"></i> Flowchart Fuzzy
+        </button>
+        <button class="diagram-tab" data-tab="flowchart-krs" role="tab">
+          <i class="fa-solid fa-file-signature"></i> Flowchart Input KRS
+        </button>
       </div>
-      <div class="table-list">
-        <h4><i class="fa-solid fa-sitemap" style="color:var(--blue-600);margin-right:8px;"></i> Flowchart Sistem</h4>
-        <p style="font-size:.9rem;color:var(--muted);margin-bottom:16px;">Alur proses utama yang terjadi di dalam sistem, dari sisi admin dan mahasiswa.</p>
-        <div class="erd" style="margin-bottom:16px;">
-          <a href="dokumentasi/flowchart.png" target="_blank">
-            <img src="dokumentasi/flowchart.png" alt="Flowchart Utama" style="border-radius:12px;">
-          </a>
+
+      <div class="diagram-panel active" data-panel="erd">
+        <div class="diagram-stage">
+          <div class="diagram-canvas">
+            <img src="dokumentasi/erd.png" alt="Entity Relationship Diagram SiMahasiswa" data-full="dokumentasi/erd.png" data-title="ERD Database">
+          </div>
+          <span class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk perbesar</span>
         </div>
-        <div class="erd">
-           <a href="dokumentasi/flowchart-input-krs.png" target="_blank">
-            <img src="dokumentasi/flowchart-input-krs.png" alt="Flowchart Input KRS" style="border-radius:12px;">
-           </a>
+        <div class="diagram-info">
+          <div class="diagram-badges">
+            <span class="badge"><i class="fa-solid fa-layer-group"></i> 6 Tabel Master</span>
+            <span class="badge"><i class="fa-solid fa-code-branch"></i> 6 Tabel Transaksi</span>
+            <span class="badge"><i class="fa-solid fa-key"></i> NIM = Kunci Relasi</span>
+          </div>
+          <h3>Entity Relationship Diagram</h3>
+          <p>Memetakan seluruh entitas sistem, dari data master hingga tabel transaksi beserta relasi antar tabelnya.</p>
+          <div class="diagram-points">
+            <div class="diagram-point"><i class="fa-solid fa-database"></i><span><b>Master data</b> — mahasiswa, mata_kuliah, dosen, ruangan, buku, users &amp; roles.</span></div>
+            <div class="diagram-point"><i class="fa-solid fa-shuffle"></i><span><b>Relasi</b> — transaksi KRS, nilai, jadwal, presensi, UKT, dan peminjaman buku terhubung lewat NIM.</span></div>
+            <div class="diagram-point"><i class="fa-solid fa-brain"></i><span><b>Integrasi fuzzy</b> — modul evaluasi menghitung nilai akhir, performa, dan kelayakan KRS.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-panel" data-panel="flowchart">
+        <div class="diagram-stage">
+          <div class="diagram-canvas">
+            <img src="dokumentasi/flowchart.png" alt="Flowchart Sistem Evaluasi Fuzzy" data-full="dokumentasi/flowchart.png" data-title="Flowchart Evaluasi Fuzzy">
+          </div>
+          <span class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk perbesar</span>
+        </div>
+        <div class="diagram-info">
+          <div class="diagram-badges">
+            <span class="badge"><i class="fa-solid fa-diagram-project"></i> Metode Mamdani</span>
+            <span class="badge"><i class="fa-solid fa-bullseye"></i> Defuzzifikasi Centroid</span>
+          </div>
+          <h3>Flowchart Evaluasi Fuzzy</h3>
+          <p>Alur perhitungan performa akademik, mulai dari input user hingga hasil akhir tersimpan di database.</p>
+          <div class="diagram-points">
+            <div class="diagram-point"><i class="fa-solid fa-code-branch"></i><span><b>3 jenis evaluasi</b> — nilai akhir, performa mahasiswa, dan kelayakan KRS.</span></div>
+            <div class="diagram-point"><i class="fa-solid fa-wave-square"></i><span><b>Tahap fuzzy</b> — fuzzifikasi → aturan Mamdani → agregasi → defuzzifikasi centroid (skor 0–100).</span></div>
+            <div class="diagram-point"><i class="fa-solid fa-floppy-disk"></i><span><b>Penyimpanan</b> — hasil disimpan sebagai <i>nilai_akhir</i> dan <i>fuzzy_detail</i>.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-panel" data-panel="flowchart-krs">
+        <div class="diagram-stage">
+          <div class="diagram-canvas">
+            <img src="dokumentasi/flowchart-input-krs.png" alt="Flowchart Input KRS" data-full="dokumentasi/flowchart-input-krs.png" data-title="Flowchart Input KRS">
+          </div>
+          <span class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk perbesar</span>
+        </div>
+        <div class="diagram-info">
+          <div class="diagram-badges">
+            <span class="badge"><i class="fa-solid fa-user-check"></i> Login</span>
+            <span class="badge"><i class="fa-solid fa-file-pen"></i> Input KRS</span>
+            <span class="badge"><i class="fa-solid fa-check-double"></i> Verifikasi Admin</span>
+          </div>
+          <h3>Flowchart Input KRS</h3>
+          <p>Alur lengkap pengajuan KRS oleh mahasiswa hingga disetujui oleh admin.</p>
+          <div class="diagram-points">
+            <div class="diagram-point"><i class="fa-solid fa-right-to-bracket"></i><span><b>Autentikasi</b> — login dengan validasi kredensial via <i>AuthController@login</i>.</span></div>
+            <div class="diagram-point"><i class="fa-solid fa-file-signature"></i><span><b>Input KRS</b> — rekomendasi kelayakan fuzzy ditampilkan real-time sebelum disimpan.</span></div>
+            <div class="diagram-point"><i class="fa-solid fa-check-double"></i><span><b>Verifikasi</b> — admin menyetujui hingga status KRS berubah <i>terverifikasi</i>.</span></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+  <img id="lightbox-img" src="" alt="">
+  <span class="lightbox-caption" id="lightbox-caption"></span>
+</div>
 
 <!-- FUZZY LOGIC -->
 <section class="alt" id="fuzzy">
@@ -585,6 +732,38 @@ footer .stackline{font-family:'JetBrains Mono';font-size:.72rem;color:var(--mute
     });
   }, {threshold:0.12});
   revealEls.forEach(el=>io.observe(el));
+
+  // Diagram tabs
+  const tabs = document.querySelectorAll('.diagram-tab');
+  const panels = document.querySelectorAll('.diagram-panel');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabs.forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.dataset.tab;
+      panels.forEach(p=>p.classList.toggle('active', p.dataset.panel===target));
+    });
+  });
+
+  // Lightbox
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const closeLightbox = ()=>{
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  document.querySelectorAll('.diagram-canvas img').forEach(img=>{
+    img.addEventListener('click',()=>{
+      lightboxImg.src = img.dataset.full || img.src;
+      lightboxCaption.textContent = img.dataset.title || img.alt;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click',(e)=>{ if(e.target===lightbox) closeLightbox(); });
+  document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeLightbox(); });
 
   // APK download link aktif — file app-release.apk tersedia di root
 </script>
